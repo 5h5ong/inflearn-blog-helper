@@ -78,16 +78,8 @@ const createWindow = async (
   return { window: mainWindow, view: view };
 };
 
-// This method will be called when Electron has finished
-// initialization and is ready to create browser windows.
-// Some APIs can only be used after this event occurs.
 app.on("ready", async () => {
   const { window, view } = await createWindow(store);
-
-  const debouncedSetUsernameAndGoToPage = debounce(setUsernameAndgoToPage);
-  ipcMain.on(ipcConstants.EDIT_USERNAME, (e, payload: { username: string }) => {
-    debouncedSetUsernameAndGoToPage(store, view.webContents, payload.username);
-  });
 
   const menu = Menu.buildFromTemplate([
     {
@@ -119,6 +111,11 @@ app.on("ready", async () => {
   });
 
   // IPC
+  const debouncedSetUsernameAndGoToPage = debounce(setUsernameAndgoToPage);
+  ipcMain.on(ipcConstants.EDIT_USERNAME, (e, payload: { username: string }) => {
+    debouncedSetUsernameAndGoToPage(store, view.webContents, payload.username);
+  });
+
   ipcMain.on(ipcConstants.EDIT_USERNAME, (e, payload: { username: string }) => {
     setUsername(store, payload.username);
   });
@@ -128,25 +125,20 @@ app.on("ready", async () => {
     return username;
   });
 
-  // Handle an IPC request with the given constant and callback function
+  // 현재 url을 비교함
   ipcMain.handle(
-    ipcConstants.CHECK_CURRENT_URL, // Constant used to identify the request
+    ipcConstants.CHECK_CURRENT_URL,
     (e, payload: { urlToCompare: string }): boolean => {
-      // Callback function that takes in an event and a payload object
-      const { urlToCompare } = payload; // Destructure the urlToCompare property from the payload object
-      const currentUrl = view.webContents.getURL(); // Get the current URL of the web contents
+      const { urlToCompare } = payload;
+      const currentUrl = view.webContents.getURL();
       if (currentUrl === urlToCompare) {
-        // Check if the current URL matches the URL to compare
-        return true; // Return true if the URLs match
+        return true;
       }
-      return false; // Return false if the URLs do not match
+      return false;
     }
   );
 });
 
-// Quit when all windows are closed, except on macOS. There, it's common
-// for applications and their menu bar to stay active until the user quits
-// explicitly with Cmd + Q.
 app.on("window-all-closed", () => {
   if (process.platform !== "darwin") {
     app.quit();
@@ -154,8 +146,6 @@ app.on("window-all-closed", () => {
 });
 
 app.on("activate", () => {
-  // On OS X it's common to re-create a window in the app when the
-  // dock icon is clicked and there are no other windows open.
   if (BrowserWindow.getAllWindows().length === 0) {
     createWindow(store);
   }
