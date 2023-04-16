@@ -1,5 +1,6 @@
 import Store from "electron-store";
 import { StoreType } from "./store.interface";
+import { dialog } from "electron";
 
 export const getUsername = async (store: Store<StoreType>) => {
   return store.get("userName");
@@ -62,4 +63,12 @@ export const debounce = <A extends unknown[], R = void>(
       fn(...args);
     }, delay);
   };
+};
+
+// 마크다운 파일 경로 가져오기
+export const getMarkdownFilePath = async () => {
+  const { filePaths } = await dialog.showOpenDialog({
+    properties: ["openFile"],
+  });
+  return filePaths[0];
 };
