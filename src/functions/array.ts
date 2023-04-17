@@ -13,7 +13,14 @@ const isUnorderedList = checkWithRegex(
 const isSpecial = (value: string) =>
   isCodeblock(value) || isOrderedList(value) || isUnorderedList(value);
 
-export const makeRawMarkdownObject = (
+/**
+ * 마크다운의 중요한 요소(코드블럭, 리스트 등)을 재귀적으로 파싱
+ * @param markdownArray 마크다운 어레이
+ * @param markdownObject 생성 중인 마크다운 오브젝트
+ * @param index 마크다운 요소들의 순서
+ * @returns 완성된 마크다운 오브젝트
+ */
+const recurMakeMarkdownObject = (
   markdownArray: string[],
   markdownObject: MarkdownV2 = { text: [], codeblock: [], list: [] },
   index = 0
@@ -35,7 +42,7 @@ export const makeRawMarkdownObject = (
   if (isCodeblock(markdownArray[0])) {
     const pairCodeblockIndex =
       markdownArray.slice(1).findIndex(isCodeblock) + 1;
-    return makeRawMarkdownObject(
+    return recurMakeMarkdownObject(
       markdownArray.slice(pairCodeblockIndex + 1),
       {
         ...markdownObject,
@@ -51,7 +58,7 @@ export const makeRawMarkdownObject = (
     );
   }
 
-  return makeRawMarkdownObject(
+  return recurMakeMarkdownObject(
     markdownArray.slice(notableIndex),
     {
       ...markdownObject,
@@ -63,3 +70,11 @@ export const makeRawMarkdownObject = (
     index + 1
   );
 };
+
+/**
+ * 마크다운의 중요한 요소(코드블럭, 리스트...)들로 나눈 오브젝트로 변환해 리턴함
+ * @param markdownArray 마크다운 어레이
+ * @returns 마크다운 오브젝트
+ */
+export const makeMarkdownObject = (markdownArray: string[]) =>
+  recurMakeMarkdownObject(markdownArray);
