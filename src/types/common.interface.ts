@@ -1,8 +1,8 @@
-const KeyAccelerator = {
+export const KeyAccelerator = {
   ENTER: "Enter",
   SHIFT: "Shift",
 } as const;
-type KeyAccelerator = typeof KeyAccelerator[keyof typeof KeyAccelerator];
+export type KeyAccelerator = typeof KeyAccelerator[keyof typeof KeyAccelerator];
 
 interface Key {
   keys: KeyAccelerator[];
