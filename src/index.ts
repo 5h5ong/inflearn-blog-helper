@@ -1,5 +1,11 @@
 import { app, BrowserView, BrowserWindow, ipcMain, Menu } from "electron";
 import Store from "electron-store";
+import {
+  setMarkdownObject,
+  getMarkdownObject,
+  setIsMarkdownLoaded,
+  getIsMarkdownLoaded,
+} from "./shardData";
 import ipcConstants from "./constants/ipc.constants";
 import { StoreType } from "./store.interface";
 import {
@@ -61,7 +67,7 @@ const createWindow = async (
   mainWindow.loadURL(MAIN_WINDOW_WEBPACK_ENTRY);
 
   // Open the DevTools.
-  // view.webContents.openDevTools({ mode: "bottom" });
+  mainWindow.webContents.openDevTools({ mode: "detach" });
 
   // 오른쪽 클릭으로 좌표 확인
   view.webContents.on("context-menu", (event, params) => {
@@ -76,14 +82,17 @@ const createWindow = async (
     const currentUrl = view.webContents.getURL();
 
     // 렌더러 프로세스로 현재 페이지의 url을 보냄
-    mainWindow.webContents.send(ipcConstants.ON_URL_CHANGED, currentUrl);
+    mainWindow.webContents.send(
+      ipcConstants.ON_WRITE_STATE_CHANGED,
+      currentUrl
+    );
   });
 
   return { window: mainWindow, view: view };
 };
 
 app.on("ready", async () => {
-  const { view } = await createWindow(store);
+  const { view, window } = await createWindow(store);
 
   const menu = Menu.buildFromTemplate([
     {
@@ -142,7 +151,8 @@ app.on("ready", async () => {
     }
   );
 
-  ipcMain.handle(ipcConstants.GET_MARKDOWN, async () => {
+  ipcMain.handle(ipcConstants.PARSE_MARKDOWN_FILE, async () => {
+    const currentUrl = view.webContents.getURL();
     const filePath = await getMarkdownFilePath();
     const rawMarkdownText = await readFileText(filePath);
     const rawMarkdownArray = splitMarkdownTextIntoNewlines(rawMarkdownText);
@@ -169,6 +179,14 @@ app.on("ready", async () => {
         };
       }),
     };
+    setMarkdownObject(addEscapeKeyLastOfCodeblock);
+    setIsMarkdownLoaded(true);
+    window.webContents.send(ipcConstants.ON_WRITE_STATE_CHANGED, currentUrl);
+    return true;
+  });
+
+  ipcMain.handle(ipcConstants.GET_MARKDOWN_STATUS, () => {
+    return getIsMarkdownLoaded();
   });
 });
 

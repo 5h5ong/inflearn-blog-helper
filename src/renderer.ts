@@ -17,7 +17,7 @@ const writeBlogButtonEle = document.getElementById("write-blog-button");
 })();
 
 getMarkdownButtonEle.addEventListener("click", async () => {
-  await api.getMarkdown();
+  await api.parseMarkdownFile();
 });
 
 writeBlogButtonEle.addEventListener("click", async () => {});

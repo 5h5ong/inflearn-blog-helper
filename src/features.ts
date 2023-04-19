@@ -13,6 +13,10 @@ export const checkCurrentUrl = async (): Promise<boolean> => {
   return ipcRenderer.invoke(ipcConstants.CHECK_CURRENT_URL);
 };
 
-export const getMarkdown = async (): Promise<boolean> => {
-  return ipcRenderer.invoke(ipcConstants.GET_MARKDOWN);
+export const parseMarkdownFile = async (): Promise<boolean> => {
+  return ipcRenderer.invoke(ipcConstants.PARSE_MARKDOWN_FILE);
+};
+
+export const getMarkdownStatus = async (): Promise<boolean> => {
+  return ipcRenderer.invoke(ipcConstants.GET_MARKDOWN_STATUS);
 };
