@@ -8,13 +8,13 @@ interface Key {
   keys: KeyAccelerator[];
 }
 
-interface MarkdownContent<T> {
+export interface MarkdownContent {
   index: number;
-  array: T[];
+  array: (string | Key)[];
 }
 
 export interface MarkdownV2 {
-  text?: MarkdownContent<string | Key>[];
-  codeblock?: MarkdownContent<string | Key>[];
-  list?: MarkdownContent<string | Key>[];
+  text?: MarkdownContent[];
+  codeblock?: MarkdownContent[];
+  list?: MarkdownContent[];
 }

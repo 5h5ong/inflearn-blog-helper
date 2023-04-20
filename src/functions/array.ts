@@ -1,4 +1,4 @@
-import { MarkdownV2 } from "../types/common.interface";
+import { MarkdownContent, MarkdownV2 } from "../types/common.interface";
 import { curry } from "lodash/fp";
 
 export const checkWithRegex = curry((regex: RegExp, value: string) => {
@@ -78,3 +78,10 @@ const recurMakeMarkdownObject = (
  */
 export const makeMarkdownObject = (markdownArray: string[]) =>
   recurMakeMarkdownObject(markdownArray);
+
+export const extractValuesFromMarkdownObject = (obj: MarkdownV2) => {
+  const objEntries = Object.entries(obj);
+  return objEntries.reduce<MarkdownContent[]>((prev, [_, values]) => {
+    return [...prev, ...values];
+  }, []);
+};
