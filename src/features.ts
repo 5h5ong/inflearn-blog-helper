@@ -20,3 +20,7 @@ export const parseMarkdownFile = async (): Promise<boolean> => {
 export const getMarkdownStatus = async (): Promise<boolean> => {
   return ipcRenderer.invoke(ipcConstants.GET_MARKDOWN_STATUS);
 };
+
+export const insertTextToBlog = () => {
+  return ipcRenderer.send(ipcConstants.INSERT_TEXT_TO_BLOG);
+};

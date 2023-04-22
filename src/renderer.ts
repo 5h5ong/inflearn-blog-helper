@@ -20,7 +20,9 @@ getMarkdownButtonEle.addEventListener("click", async () => {
   await api.parseMarkdownFile();
 });
 
-writeBlogButtonEle.addEventListener("click", async () => {});
+writeBlogButtonEle.addEventListener("click", async () => {
+  await api.insertTextToBlog();
+});
 
 usernameInputEle.addEventListener("input", async (e) => {
   const value = (e.target as HTMLInputElement).value;

@@ -4,13 +4,15 @@ export const KeyAccelerator = {
 } as const;
 export type KeyAccelerator = typeof KeyAccelerator[keyof typeof KeyAccelerator];
 
-interface Key {
+export interface Keys {
   keys: KeyAccelerator[];
 }
 
+export type MouseButton = "left" | "right";
+
 export interface MarkdownContent {
   index: number;
-  array: (string | Key)[];
+  array: (string | Keys)[];
 }
 
 export interface MarkdownV2 {
