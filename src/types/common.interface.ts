@@ -10,9 +10,11 @@ export interface Keys {
 
 export type MouseButton = "left" | "right";
 
+export type MarkdownElement = string | Keys;
+
 export interface MarkdownContent {
   index: number;
-  array: (string | Keys)[];
+  array: MarkdownElement[];
 }
 
 export interface MarkdownV2 {
