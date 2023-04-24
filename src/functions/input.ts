@@ -1,4 +1,4 @@
-?import { BrowserView } from "electron";
+import { BrowserView } from "electron";
 import { Keys, MouseButton } from "../types/common.interface";
 import { combineArrayWithSeparator } from "./string";
 import { curry } from "lodash";
@@ -14,17 +14,19 @@ export const sendTextToBrowserView = curry(
   }
 );
 
-export const sendKeyToBrowserView = curry((view: BrowserView, keys: Keys['keys']) => {
-  const combinedString = combineArrayWithSeparator(keys, "+");
-  view.webContents.sendInputEvent({
-    type: "keyDown",
-    keyCode: combinedString,
-  });
-  view.webContents.sendInputEvent({
-    type: "keyUp",
-    keyCode: combinedString,
-  });
-});
+export const sendKeyToBrowserView = curry(
+  (view: BrowserView, keys: Keys["keys"]) => {
+    const combinedString = combineArrayWithSeparator(keys, "+");
+    view.webContents.sendInputEvent({
+      type: "keyDown",
+      keyCode: combinedString,
+    });
+    view.webContents.sendInputEvent({
+      type: "keyUp",
+      keyCode: combinedString,
+    });
+  }
+);
 
 export const sendMouseClickToBrowserView = (
   view: BrowserView,
