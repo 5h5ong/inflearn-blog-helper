@@ -19,10 +19,16 @@ import {
 import { readFileText } from "./functions/file";
 import { splitMarkdownTextIntoNewlines } from "./functions/string";
 import {
+  exchangeEmptyStirngWithEnter,
   extractValuesFromMarkdownObject,
   makeMarkdownObject,
+  mapToMarkdownArray,
 } from "./functions/array";
-import { KeyAccelerator, MarkdownV2 } from "./types/common.interface";
+import {
+  KeyAccelerator,
+  MarkdownContent,
+  MarkdownV2,
+} from "./types/common.interface";
 import {
   sendKeyToBrowserView,
   sendMouseClickToBrowserView,
@@ -187,7 +193,33 @@ app.on("ready", async () => {
         };
       }),
     };
-    setMarkdownObject(addEscapeKeyLastOfCodeblock);
+    const addEnterKeyToCodeblock: MarkdownV2 = {
+      ...addEscapeKeyLastOfCodeblock,
+      codeblock: addEscapeKeyLastOfCodeblock.codeblock.map((v) => {
+        return {
+          ...v,
+          array: v.array.flatMap((v, index, originalArray) => {
+            // 마지막 Shift+Enter와 그 전의 엘리먼트에 엔터를 추가하지 않음
+            // 엔터가 될 ''의 다음에 엔터를 추가하지 않음
+            if (index >= originalArray.length - 2 || v === "") {
+              return [v];
+            }
+            return [v, { keys: [KeyAccelerator.ENTER] }];
+          }),
+        };
+      }),
+    };
+    const mapToMarkdownArrayExchangeEnter = mapToMarkdownArray(
+      exchangeEmptyStirngWithEnter
+    );
+    const emptyStringToEnter: MarkdownV2 = {
+      ...addEnterKeyToCodeblock,
+      codeblock: addEnterKeyToCodeblock.codeblock.map(
+        mapToMarkdownArrayExchangeEnter
+      ),
+      text: addEnterKeyToCodeblock.text.map(mapToMarkdownArrayExchangeEnter),
+    };
+    setMarkdownObject(emptyStringToEnter);
     setIsMarkdownLoaded(true);
     window.webContents.send(ipcConstants.ON_WRITE_STATE_CHANGED, currentUrl);
     return true;

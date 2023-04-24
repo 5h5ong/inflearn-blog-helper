@@ -1,4 +1,9 @@
-import { MarkdownContent, MarkdownV2 } from "../types/common.interface";
+import {
+  KeyAccelerator,
+  MarkdownContent,
+  MarkdownElement,
+  MarkdownV2,
+} from "../types/common.interface";
 import { curry } from "lodash/fp";
 
 export const checkWithRegex = curry((regex: RegExp, value: string) => {
@@ -85,3 +90,19 @@ export const extractValuesFromMarkdownObject = (obj: MarkdownV2) => {
     return [...prev, ...values];
   }, []);
 };
+
+export const exchangeEmptyStirngWithEnter = (
+  markdownElement: MarkdownElement
+): MarkdownElement => {
+  if (markdownElement === "") {
+    return { keys: [KeyAccelerator.ENTER] };
+  }
+  return markdownElement;
+};
+
+export const mapToMarkdownArray = curry(
+  (
+    functionToApply: (element: MarkdownElement) => MarkdownElement,
+    { index, array }: MarkdownContent
+  ): MarkdownContent => ({ index: index, array: array.map(functionToApply) })
+);
