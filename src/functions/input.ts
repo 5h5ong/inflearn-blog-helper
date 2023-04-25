@@ -5,11 +5,9 @@ import { curry } from "lodash";
 
 export const sendTextToBrowserView = curry(
   (view: BrowserView, text: string) => {
-    text.split("").forEach((value) => {
-      view.webContents.sendInputEvent({
-        type: "char",
-        keyCode: value,
-      });
+    view.webContents.sendInputEvent({
+      type: "char",
+      keyCode: text,
     });
   }
 );
