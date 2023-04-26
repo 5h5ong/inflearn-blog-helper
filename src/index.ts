@@ -219,6 +219,7 @@ app.on("ready", async () => {
     };
     setMarkdownObject(emptyStringToEnter);
     setIsMarkdownLoaded(true);
+    window.webContents.send(ipcConstants.ON_MARKDOWN_LOADED);
     window.webContents.send(ipcConstants.ON_WRITE_STATE_CHANGED, currentUrl);
     return true;
   });

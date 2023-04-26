@@ -6,4 +6,5 @@ export default {
   GET_MARKDOWN_STATUS: "handle:getMarkdownStatus",
   INSERT_TEXT_TO_BLOG: "on:insertTextToBlog",
   ON_WRITE_STATE_CHANGED: "send:writeStateChanged",
+  ON_MARKDOWN_LOADED: "send:onMarkdownLoaded",
 } as const;

@@ -16,6 +16,14 @@ window.addEventListener("DOMContentLoaded", () => {
   const writeBlogButton = document.getElementById(
     "write-blog-button"
   ) as HTMLButtonElement;
+  const markdownStatusSpanEle = document.getElementById("markdown-status");
+
+  ipcRenderer.on(ipcConstants.ON_MARKDOWN_LOADED, async () => {
+    const markdownStatus = await api.getMarkdownStatus();
+    if (markdownStatus) {
+      markdownStatusSpanEle.innerText = "마크다운 로드 완료";
+    }
+  });
 
   // 글 작성 페이지에 있다면 버튼을 활성화, 그렇지 않다면 비활성화
   ipcRenderer.on(

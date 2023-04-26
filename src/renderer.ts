@@ -5,7 +5,6 @@ const api = window.api;
 const usernameInputEle = document.getElementById(
   "username-input"
 ) as HTMLInputElement;
-const markdownStatusSpanEle = document.getElementById("markdown-status");
 const getMarkdownButtonEle = document.getElementById(
   "get-markdown-button"
 ) as HTMLButtonElement;
